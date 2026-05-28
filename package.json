@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "coral:day": "coral query \"$(cat coral-query.sql)\" --format json"
+    "coral:day": "coral sql \"$(cat coral-query.sql)\" --format json"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",

@@ -8,7 +8,7 @@ const USE_MOCK = process.env.USE_MOCK;
 
 export async function GET() {
   try {
-    const rows = USE_MOCK ? MOCK_DAY : await fetchDay();
+    const rows = USE_MOCK === "true" ? MOCK_DAY : await fetchDay();
 
     const stats = focusScore(rows);
 

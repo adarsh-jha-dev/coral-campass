@@ -1,0 +1,67 @@
+name: discord
+title: Discord
+description: >
+  Query Discord messages, channels, and mentions as SQL tables. Useful for
+  measuring chat interruptions and activity across servers you can read.
+homepage: https://discord.com/developers/docs
+
+
+auth:
+  type: header
+  header: Authorization
+  value: "Bot {{ DISCORD_BOT_TOKEN }}"
+
+variables:
+  - name: DISCORD_BOT_TOKEN
+    description: Bot token from the Discord Developer Portal (Bot > Token).
+    secret: true
+    required: true
+  - name: DISCORD_GUILD_ID
+    description: The server (guild) ID to scope reads to.
+    required: true
+
+base_url: https://discord.com/api/v10
+
+rate_limit:
+  respect_retry_after: true
+
+tables:
+  - name: channels
+    description: Text channels in the configured guild.
+    request:
+      method: GET
+      path: /guilds/{{ DISCORD_GUILD_ID }}/channels
+    columns:
+      - { name: id,       type: string, description: Channel ID }
+      - { name: name,     type: string, description: Channel name }
+      - { name: type,     type: integer, description: Discord channel type enum }
+      - { name: guild_id, type: string, description: Parent guild ID }
+
+  - name: messages
+    description: >
+      Messages in a channel. Requires channel_id. Returns author, timestamp,
+      and whether the message mentions the bot/user (is_mention) — the field
+      the Context Switch Tracker uses to count interruptions.
+    request:
+      method: GET
+      path: /channels/{{ channel_id }}/messages
+      query:
+        limit: 100
+      pagination:
+        type: cursor
+        cursor_param: before
+        cursor_path: $[-1].id      # last message's id becomes next `before`
+        stop_when_empty: true
+    params:
+      - name: channel_id
+        description: Channel to read messages from (from discord.channels.id).
+        required: true
+    columns:
+      - { name: id,         type: string,   description: Message ID }
+      - { name: channel,    type: string,   source: channel_id, description: Channel ID }
+      - { name: author,     type: string,   source: author.username, description: Author username }
+      - { name: content,    type: string,   description: Message text }
+      - { name: sent_at,    type: timestamp, source: timestamp, description: ISO8601 send time }
+      - { name: is_mention, type: boolean,  source: "mentions", transform: non_empty,
+          description: True if the message mentions anyone (proxy for a ping) }
+      - { name: mentions,   type: json,     description: Raw mentions array }
