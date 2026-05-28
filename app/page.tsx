@@ -8,7 +8,8 @@ type Stats = {
   score: number; switches: number; focusHours: number;
   longestBlockMins: number; taxMinutes: number; worstHour: number | null;
 };
-type DayData = { rows: HourRow[]; stats: Stats; insight: string; source: string };
+type Insight = { headline: string; detail: string; recommendation: string };
+type DayData = { rows: HourRow[]; stats: Stats; insight: Insight; source: string };
 
 function hourLabel(h: number) {
   const period = h < 12 ? "AM" : "PM";
@@ -128,7 +129,11 @@ export default function Page() {
       <div className="insights">
         <div className="insight-main">
           <div className="ai-badge">✦ {process.env.NEXT_PUBLIC_LLM_LABEL || "AI"}-generated insight</div>
-          <p>{insight}</p>
+          <h4 style={{ fontFamily: "'Fraunces',serif", fontWeight: 600, fontSize: 20, marginBottom: 12, lineHeight: 1.25 }}>
+            {insight.headline}
+          </h4>
+          <p>{insight.detail}</p>
+          <p style={{ marginTop: 14, color: "var(--reef)", fontSize: 13.5 }}>→ {insight.recommendation}</p>
         </div>
         <div className="side-col">
           <div className="mini">

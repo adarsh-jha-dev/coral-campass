@@ -2,14 +2,13 @@ WITH hours AS (
   SELECT unnest(range(0,24)) AS hour
 ),
 git AS (
-  SELECT EXTRACT(HOUR FROM commit__author__date) AS h, COUNT(*) AS commits
-  FROM github.commits
-  WHERE owner = 'adarsh-jha-dev' AND repo = 'audit-ai'
-    AND commit__author__date::date >= CURRENT_DATE - 30
+  SELECT EXTRACT(HOUR FROM ts AT TIME ZONE 'Asia/Kolkata') AS h, COUNT(*) AS commits
+  FROM slack.messages(channel => 'C0B5XEGAYG7')
+  WHERE ts::date >= CURRENT_DATE - 30
   GROUP BY 1
 ),
 chat AS (
-  SELECT EXTRACT(HOUR FROM ts) AS h, COUNT(*) AS pings
+  SELECT EXTRACT(HOUR FROM ts AT TIME ZONE 'Asia/Kolkata') AS h, COUNT(*) AS pings
   FROM slack.messages(channel => 'C0B5XEGAYG7')
   WHERE ts::date >= CURRENT_DATE - 30
   GROUP BY 1

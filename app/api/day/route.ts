@@ -14,7 +14,7 @@ export async function GET() {
 
     const insight = await diagnose(rows, stats);
 
-    return NextResponse.json({ rows, stats, insight, source: USE_MOCK ? "mock" : "coral" });
+    return NextResponse.json({ rows, stats, insight, source: USE_MOCK === "true" ? "mock" : "coral" });
   } catch (err) {
     console.error("[/api/day]", err);
     return NextResponse.json(
