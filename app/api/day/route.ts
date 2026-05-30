@@ -14,7 +14,6 @@ export async function GET() {
     if (USE_MOCK === "false") {
       try {
         const meetingsByHour = await gcalMeetingsByHour();
-        console.log("[gcal] meetings by hour:", meetingsByHour);
         for (const r of rows) {
           r.meetings = meetingsByHour[r.hour] ?? 0;
         }

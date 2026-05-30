@@ -57,8 +57,8 @@ export default function Page() {
 
       <section className="hero">
         <div>
-          <div className="eyebrow">▲ Today</div>
-          <h2>Your deep work got <em>shredded</em> {stats.switches} times today.</h2>
+          <div className="eyebrow">▲ This week</div>
+          <h2>Your deep work got <em>shredded</em> {stats.switches} times this week.</h2>
           <p>Coral Compass joins your commits, calendar, and chat onto one timeline — then measures what fragmentation actually costs you.</p>
         </div>
         <div className="gauge-card">
